@@ -59,7 +59,7 @@ import org.jis.view.dialog.OptionsEdit;
  * The Main Class is the Entry Point of the Application and build the GUI
  * </p>
  */
-public class Main extends JFrame {
+public final class Main extends JFrame {
   private static final long serialVersionUID = 5124271743719044219L;
 
   private Options           o;
@@ -93,8 +93,7 @@ public class Main extends JFrame {
     init();
   }
 
-  private void init()
-  {
+  private void init() {
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     GraphicsDevice[] gs = ge.getScreenDevices();
     GraphicsDevice gd = gs[0];
@@ -177,7 +176,7 @@ public class Main extends JFrame {
     jsplit.setOneTouchExpandable(true);
     jsplit.setResizeWeight(0.7D);
 
-    if(o.isTextbox())
+    if (o.isTextbox())
     {
       c.add(jsplit, BorderLayout.CENTER);
     }
