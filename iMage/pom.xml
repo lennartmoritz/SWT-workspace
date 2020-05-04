@@ -5,8 +5,8 @@
     <artifactId>uebungsparent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>swt1.ub1.a1</groupId>
-  <artifactId>2062822</artifactId>
+  <groupId>swt1</groupId>
+  <artifactId>iMage</artifactId>
   <packaging>pom</packaging>
   <name>iMage</name>
   <repositories>
