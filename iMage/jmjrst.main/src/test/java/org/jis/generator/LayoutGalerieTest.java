@@ -7,10 +7,14 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.Random;
 
 import org.junit.Test;
@@ -73,7 +77,8 @@ public class LayoutGalerieTest {
 		try {
 			final File resourceFolder = new File(this.getClass().getResource(File.separator).toURI());
 			fromFile = new File(resourceFolder, "from");
-			fromFile.mkdir();
+			assertTrue("Could not create directory", fromFile.mkdir()); //TODO: Rework
+//			fromFile.mkdir();
 			toFile = new File(resourceFolder, "to");
 			galerieUnderTest.copyFile(fromFile, toFile);
 			}
@@ -140,15 +145,58 @@ public class LayoutGalerieTest {
 	}
 	
 	/**
+	 * Test method for {@link org.jis.generator.LayoutGalerie#copyFile(File, File)} while trying to copy from a file without read access.
+	 */
+	@Test(expected = IOException.class)
+	public final void testCopyFileNoReadAccess() throws IOException{
+		FileLock lock;
+		FileChannel fChannel;
+		try {
+			final File resourceFolder = new File(this.getClass().getResource(File.separator).toURI());
+			fromFile = new File(resourceFolder, "from");
+			toFile = new File(resourceFolder, "to");
+			
+			byte[] array = new byte[10];
+			new Random().nextBytes(array);
+			String randomString = new String(array);
+		 			 
+			fromFile.createNewFile();
+			Path fromPath = FileSystems.getDefault().getPath(fromFile.getPath());
+			Files.writeString(fromPath, randomString);
+			
+			fChannel = FileChannel.open(fromPath, StandardOpenOption.WRITE);
+			lock = fChannel.lock(0L, Long.MAX_VALUE, false);
+
+			try {
+				galerieUnderTest.copyFile(fromFile, toFile);
+			}
+			catch (IOException e) {
+				lock.release();
+				fChannel.close();
+				throw e;
+			}
+			finally {
+				lock.release();
+				fChannel.close();
+			}
+
+		 }
+		 catch (URISyntaxException e) {
+			fail();
+		 }
+	}
+	
+	/**
 	 * Remove used Files
 	 */
 	@After
 	public final void removeCopiedFile() {
-		if (toFile.exists()) {
-			toFile.delete();
-		}
+		galerieUnderTest = null;
 		if (fromFile.exists()) {
-			fromFile.delete();
+			assertTrue(fromFile.delete());
+		}
+		if (toFile.exists()) {
+			assertTrue(toFile.delete());
 		}
 	}
 
