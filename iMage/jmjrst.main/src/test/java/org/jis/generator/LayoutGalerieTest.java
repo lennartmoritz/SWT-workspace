@@ -187,6 +187,50 @@ public class LayoutGalerieTest {
 	}
 	
 	/**
+	 * Test method for {@link org.jis.generator.LayoutGalerie#copyFile(File, File)} while trying to copy to a file without write access.
+	 */
+	@Test(expected = IOException.class)
+	public final void testCopyFileNoWriteAccess() throws IOException{
+		FileLock lock;
+		FileChannel fChannel;
+		try {
+			final File resourceFolder = new File(this.getClass().getResource(File.separator).toURI());
+			fromFile = new File(resourceFolder, "from");
+			toFile = new File(resourceFolder, "to");
+			
+			byte[] array = new byte[10];
+			new Random().nextBytes(array);
+			String randomString = new String(array);
+		 			 
+			fromFile.createNewFile();
+			toFile.createNewFile();
+			Path fromPath = FileSystems.getDefault().getPath(fromFile.getPath());
+			Path toPath = FileSystems.getDefault().getPath(toFile.getPath());			
+			Files.writeString(fromPath, randomString);
+			
+			fChannel = FileChannel.open(toPath, StandardOpenOption.WRITE);
+			lock = fChannel.lock(0L, Long.MAX_VALUE, false);
+
+			try {
+				galerieUnderTest.copyFile(fromFile, toFile);
+			}
+			catch (IOException e) {
+				lock.release();
+				fChannel.close();
+				throw e;
+			}
+			finally {
+				lock.release();
+				fChannel.close();
+			}
+
+		 }
+		 catch (URISyntaxException e) {
+			fail();
+		 }
+	}
+	
+	/**
 	 * Remove used Files
 	 */
 	@After
