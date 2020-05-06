@@ -44,7 +44,7 @@
       </plugins>
     </pluginManagement>
   </build>
-  <groupId>swt1.ub1.a1</groupId>
+  <groupId>swt1.ub1.a2</groupId>
   <dependencies>
   	<dependency>
   		<groupId>junit</groupId>
