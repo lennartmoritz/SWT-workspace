@@ -1,0 +1,86 @@
+\documentclass[parskip=full]{scrartcl}
+\usepackage[utf8]{inputenc} % use utf8 file encoding for TeX sources
+\usepackage[T1]{fontenc}    % avoid garbled Unicode text in pdf
+\usepackage[german]{babel}  % german hyphenation, quotes, etc
+\usepackage{hyperref}       % detailed hyperlink/pdf configuration
+\hypersetup{                % ‘texdoc hyperref‘ for options
+pdftitle={SWT1 Durchführbarkeitsuntersuchung},%
+bookmarks=true,%
+}
+\usepackage{graphicx}       % provides commands for including figures
+\usepackage{csquotes}       % provides \enquote{} macro for "quotes"
+\usepackage[nonumberlist]{glossaries}     % provides glossary commands
+\usepackage{enumitem}
+
+\makenoidxglossaries
+%
+% % Glossareinträge
+%
+\newglossaryentry{Dozent}
+{
+	name=Dozent,
+	plural=Dozenten,
+	description={Leiter eines oder mehrerer Seminartypen},
+}
+
+\newglossaryentry{Kunde}
+{
+	name=Kunde,
+	plural=Kunden,
+	description={(Zahlender) Nutzer der zu Entwickelnden Software}
+}
+
+\newglossaryentry{Seminartyp}
+{
+	name=Seminartyp,
+	plural=Seminartypen,
+	description={Typ einer Lehrveranstaltung (z.B. \enquote{Schöner Malen -- Anfängerkurs})}
+}
+
+\newglossaryentry{Cloud}
+{
+	name=Cloud,
+	plural=Clouds,
+	description={Über das Internet zugänglicher Server auf dem Nutzer Daten speichern und abrufen können.}
+}
+
+\newglossaryentry{Computer}
+{
+	name=Computer,
+	description={Gerät zur Verarbeitung zur Daten, das die Daten einlesen, verarbeiten, speichern und ausgeben kann}
+}
+
+\title{SWT1: Durchführbarkeitsuntersuchung}
+\author{Lennart Moritz, 2062822}
+
+\begin{document}
+
+\maketitle
+
+\section{Fachliche Durchführbarkeit}
+Da bei von Pear Corp eine reihe von erfahrenen Informatikern arbeiten und diesen Mitarbeitern die notwendigen Ressourcen also \gls{Computer}, Internetverbindung, Webserver, Kontakte zu dem KIT, sowie die Erlaubnis am Arbeitsplatz auf stackoverflow.com zu surfen zur Verfügung stehen. Steht der Fachlichen Durchführung nichts im Weg.
+
+\section{Alternative Lösungsvorschläge}
+Es gibt bereits Tools für Einzelaufgaben der geplanten Software. So wäre es schlau die Bildkomprimierung nicht neu zu erfinden, sondern das Paket \enquote{javax.imageio} für diesen Zweck zu verwenden. Abgesehen davon ist bisher keine alternative Software bekannt die Pear Corp ankaufen und anpassen könnte, die zu einem geringeren Kostenaufwand als eine Eigenentwicklung führen würde, wenn man bedenkt, dass diese Anwendung nur einen Begrenzten Umfang hat.
+
+\section{Personelle Durchführbarkeit}
+Da Pear Corp über eine Reihe von studentischen Mitarbeitern verfügt, welche auch in anderen Projekten von ihrer Uni eingebunden sind, ist es möglich diese Studenten etwas mehr auszulasten und sie noch mit der Bearbeitung dieser Aufgabe zu betrauen. Dafür müssen die Studenten teilweise eine Umpriorisierung ihrer Work-Life-Balance in kauf nehmen und ihren Arbeitsaufwand in andern Vorlesungen leicht reduzieren um mehr Zeit in dieses Projekt zu investieren.Das ist aus der Sicht von Pear Corp im Rahmen der verbesserten praktischen Erfahrungen der Studenten hinnehmbar.
+
+\section{Risiken}
+Das Anwenden von Filtern auf Bildern ist ein sehr umkämpfter Markt und insbesondere Social-Media-Platformen stellen eine starke Konkurrenz im Markt der Bildbearbeitung und Speicherung mit integrierter Runterkalierung dar. Jedoch ist das geplante Anbegot der Bildsuche mit Nutzungsrechtsinformationen und eine freiwillige, sowie Einstellbare Bildskalierung die Chance für Pear Corp sich durch diese Merkmale von der Konkurrenz bei den \Glspl{Kunde} abzuheben.
+
+\section{Ökonomische Durchführbarkeit}
+Da die studentischen Mitarbeiter bei Pear Corp unentgeltlich zu den Projekten beitragen und sie aus eigenem Interesse für einen Erfahrungsgewinn an den Aufgaben mitarbeiten sind die zu erwarteten Server- und Stromkosten, sowie etwaige Lizenzgebühren für Softwareprodukte ein leicht zu erbringender Preis für das Produkt. Da auch die Nachfrage nach der betreffenden Software aufgrund der starken Konkurrenz eingeschränkt sein wird ist die ökonomische Planung des Projektes und ein adäquates Bezahlmodell für die Software eine noch zu prüfende Aufgabe.
+
+\section{Rechtliche Gesichtspunkte}
+Um bei der Software Rechtsstreitigkeiten vorzubeugen ist es notwendig mit dem Nutzer einen geeigneten Rahmenvertrag zu schließen, der eventuelle Nutzungsrechtsverletzungen durch das Speichern von Bildern aus dem Internet in der Pear Corp \Gls{Cloud} nicht in die Verantwortung Pear Corp überträgt.
+%
+% % Automatisch generiertes Glossar (Latex zwei mal ausführen um Glossar anzuzeigen)
+%
+%\glsaddall % das sorgt dafür, dass alles Glossareinträge gedruckt werden, nicht nur die verwendeten. Das sollte nicht nötig sein!
+\printnoidxglossaries
+
+
+
+
+\end{document}
