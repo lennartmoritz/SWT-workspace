@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import javax.imageio.*;
 import javax.imageio.metadata.IIOMetadata;
@@ -232,6 +233,7 @@ public class GeneratorTest {
     return true;
   }
   
+  @Ignore
   @Test
   public void testGenerateImage() {
 	  BufferedImage myTestImage;

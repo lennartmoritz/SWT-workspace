@@ -4,6 +4,7 @@
     <groupId>swt1</groupId>
     <artifactId>iMage</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
   <artifactId>iMage.mosaique</artifactId>
   <dependencies>
@@ -11,6 +12,11 @@
   		<groupId>swt1</groupId>
   		<artifactId>iMage.mosaique.base</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<scope>test</scope>
   	</dependency>
   </dependencies>
 </project>

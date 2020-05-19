@@ -17,5 +17,6 @@
   </repositories>
   <modules>
   	<module>jmjrst.main</module>
+  	<module>iMage.mosaique</module>
   </modules>
 </project>
