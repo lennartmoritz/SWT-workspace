@@ -79,14 +79,11 @@ public class RectangleArtist implements IMosaiqueArtist<BufferedArtImage> {
       int currentMatchValue;
       currentMatchValue = (int) Math.sqrt(Math.pow(valA-sampleA, 2) + Math.pow(valR-sampleR, 2)
       + Math.pow(valG-sampleG, 2) + Math.pow(valB-sampleB, 2));
-      System.out.println(currentMatchValue);
       if (currentMatchValue < bestMatchValue) {
-        System.out.println("FOUND: " + currentMatchValue + "<" + bestMatchValue);
         bestMatchValue = currentMatchValue;
         bestMatchIndex = avgColorList.lastIndexOf(avgColor);
       }
     }
-    System.out.println("best match was:"+ bestMatchIndex);
     return this.imageList.get(bestMatchIndex);
   }
 
