@@ -15,14 +15,18 @@
  */
 package org.jis.view;
 
+import java.awt.event.ActionEvent;
 import java.net.URL;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 
+import org.iMage.plugins.PluginForJmjrst;
+import org.iMage.plugins.PluginManagement;
 import org.jis.Main;
 import org.jis.listner.MenuListner;
 
@@ -59,6 +63,7 @@ public class Menu extends JMenuBar {
     JMenu datei = new JMenu(m.mes.getString("Menu.0"));
     JMenu option = new JMenu(m.mes.getString("Menu.1"));
     JMenu optionen_look = new JMenu(m.mes.getString("Menu.2"));
+    JMenu plugins = new JMenu(m.mes.getString("Menu.17"));
     JMenu about = new JMenu(m.mes.getString("Menu.3"));
 
     gener = new JMenuItem(m.mes.getString("Menu.4"));
@@ -102,6 +107,44 @@ public class Menu extends JMenuBar {
     gener.setEnabled(false);
     zippen.setEnabled(false);
     gallerie.setEnabled(false);
+    
+    //TODO: test this
+    /**
+     * List all plug-ins
+     */
+    Iterable<PluginForJmjrst> pluginList = PluginManagement.getPlugins();
+    for (PluginForJmjrst plugin : pluginList) {
+      JMenuItem tempItem = new JMenuItem(new AbstractAction("Start" + plugin.getName()) {
+        
+        private static final long serialVersionUID = -5248261527843149996L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          plugin.run();
+        }
+      });
+      plugins.add(tempItem);
+      
+      if (plugin.isConfigurable()) {
+        tempItem = new JMenuItem(new AbstractAction("Configure" + plugin.getName()) {
+          
+          private static final long serialVersionUID = 4187863283683296515L;
+
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            plugin.configure();
+          }
+        });
+        plugins.add(tempItem);
+      }
+      plugins.addSeparator();
+    }
+    if (!pluginList.iterator().hasNext()) {
+      JMenuItem tempItem = new JMenuItem("(No plug-ins available!)");
+      tempItem.setEnabled(false);
+      plugins.add(tempItem);
+    }
+    //TODO: test this
 
     datei.add(gener);
     datei.add(zippen);
@@ -115,6 +158,7 @@ public class Menu extends JMenuBar {
     about.add(info);
     this.add(datei);
     this.add(option);
+    this.add(plugins);
     this.add(about);
 
     MenuListner al = new MenuListner(m, this);
