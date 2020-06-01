@@ -19,5 +19,6 @@
   	<module>jmjrst.main</module>
   	<module>iMage.mosaique</module>
   	<module>iMage.mosaique.cli</module>
+  	<module>iMage.JavaCrashCourse-plugin</module>
   </modules>
 </project>

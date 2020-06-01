@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>swt1</groupId>
+    <artifactId>iMage</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>2062822</artifactId>
+  <groupId>swt1.ub3.a2</groupId>
+  <dependencies>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<scope>test</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>swt1.ub3.a1</groupId>
+  		<artifactId>2062822</artifactId>
+  		<version>0.1.0-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.kohsuke.metainf-services</groupId>
+  		<artifactId>metainf-services</artifactId>
+  		<version>1.1</version>
+  		<optional>true</optional>
+	</dependency>
+  </dependencies>
+</project>
