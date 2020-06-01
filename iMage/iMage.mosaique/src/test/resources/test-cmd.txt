@@ -1,0 +1,1 @@
+java -jar iMage.mosaique.cli-0.0.1-SNAPSHOT.jar -i C:\Users\Lennart\SWT-workspace\iMage\iMage.mosaique\src\test\resources\tichy_in.jpg -o C:\Users\Lennart\SWT-workspace\iMage\iMage.mosaique\src\test\resources\out.png -t C:\Users\Lennart\SWT-workspace\iMage\iMage.mosaique\src\test\resources\Mosaikbilder -w 10 -h 10

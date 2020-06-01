@@ -1,21 +1,17 @@
 package org.iMage.mosaique.cli;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.imageio.ImageIO;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.iMage.mosaique.MosaiqueEasel;
 import org.iMage.mosaique.base.BufferedArtImage;
 import org.iMage.mosaique.rectangle.RectangleArtist;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class parses all command line parameters and creates a mosaique.
@@ -32,8 +28,7 @@ public final class App {
   private static final String CMD_OPTION_TILE_W = "w";
   private static final String CMD_OPTION_TILE_H = "h";
 
-  public static void main(String[] args) throws Exception {
-    // Don't touch...
+  public static void main(String[] args) {
     CommandLine cmd = null;
     try {
       cmd = App.doCommandLineParsing(args);
@@ -41,95 +36,123 @@ public final class App {
       System.err.println("Wrong command line arguments given: " + e.getMessage());
       System.exit(1);
     }
-    // ...this!
-    
-    
-    // store inputImage
-    BufferedImage inputImage = null;
-    try {
-      inputImage = ImageIO.read(new File(cmd.getParsedOptionValue(CMD_OPTION_INPUT_IMAGE).toString()));      
-    }
-    catch (Exception e) {
-      System.out.println("Could not find input Image!");
-      System.out.println(e.getMessage());
-    }
-    
-    
-    // store tilesFolder
-    File tilesFolder = null;
-    Collection<BufferedArtImage> tiles = new ArrayList<BufferedArtImage>();
-    try {
-      tilesFolder = new File(cmd.getParsedOptionValue(CMD_OPTION_INPUT_TILES_DIR).toString());
-      if(tilesFolder.list().length < 10) {
-        throw new Exception("Too few tiles in tiles Folder! Minimum is 10!");
-      }
-    }
-    catch (Exception e) {
-      System.out.println("Could not find tile"
-          + "s folder or too few tiles were found!");
-      System.out.println(e.getMessage());
+
+    BufferedImage inputImage = loadInput(cmd);
+    List<BufferedArtImage> tiles = loadTiles(cmd);
+
+    int tileW = cmd.hasOption(App.CMD_OPTION_TILE_W) ?
+        Integer.parseInt(cmd.getOptionValue(App.CMD_OPTION_TILE_W)) :
+        inputImage.getWidth() / 10;
+
+    int tileH = cmd.hasOption(App.CMD_OPTION_TILE_H) ?
+        Integer.parseInt(cmd.getOptionValue(App.CMD_OPTION_TILE_H)) :
+        inputImage.getHeight() / 10;
+
+    if (tileW <= 0 || tileH <= 0 || tileW > inputImage.getWidth() || tileH > inputImage
+        .getHeight()) {
+      System.err.println("tileW/H is invalid: " + tileW + "," + tileH);
       System.exit(1);
     }
 
-    for (File tileFile : tilesFolder.listFiles()) {
-      try {
-        BufferedImage tempImage = ImageIO.read(tileFile);
-        tiles.add(new BufferedArtImage(tempImage));
-      } catch (Exception e) {
-        System.out.println("Could not read tiles in the tiles folder!");
-        System.out.println(e.getMessage());
+    MosaiqueEasel me = new MosaiqueEasel();
+    RectangleArtist ra = new RectangleArtist(tiles, tileW, tileH);
+    BufferedImage outputImage = me.createMosaique(inputImage, ra);
+
+    writeOutput(cmd, outputImage);
+
+  }
+
+  private static BufferedImage loadInput(CommandLine cmd) {
+    try {
+      String path = cmd.getOptionValue(App.CMD_OPTION_INPUT_IMAGE);
+      if (!path.toLowerCase().endsWith(".png") && !path.toLowerCase().endsWith(".jpeg") && !path
+          .toLowerCase().endsWith("jpg")) {
+        System.err.println("Input is neither PNG nor JPG");
         System.exit(1);
       }
+      return ImageIO.read(App.ensureFile(path, false));
+    } catch (IOException e) {
+      System.err.println(e.getMessage());
+      System.exit(1);
+      throw new Error("unreachable code");
     }
-    
-    // store and check mosaique size
-    int mosaiqueWidth = 0;
-    int mosaiqueHeight = 0;
+  }
+
+  private static List<BufferedArtImage> loadTiles(CommandLine cmd) {
+    List<BufferedArtImage> tiles = new ArrayList<>();
     try {
-      if(cmd.hasOption(CMD_OPTION_TILE_W)) {
-        mosaiqueWidth = (int) cmd.getParsedOptionValue(CMD_OPTION_TILE_W);        
-      } else {
-        mosaiqueWidth = inputImage.getWidth() / 10;
+
+      String tileDir = cmd.getOptionValue(App.CMD_OPTION_INPUT_TILES_DIR);
+
+      File directory = App.ensureFile(tileDir, false);
+      FileFilter isImage = f -> f.getName().toLowerCase().endsWith(".jpeg") || f.getName()
+          .toLowerCase().endsWith(".jpg") || f.getName().toLowerCase().endsWith(".png");
+
+      for (File file : directory.listFiles(isImage)) {
+        BufferedImage bi = ImageIO.read(file);
+        BufferedArtImage bai = new BufferedArtImage(bi);
+        tiles.add(bai);
       }
-      if (cmd.hasOption(CMD_OPTION_TILE_H)) {
-        mosaiqueHeight = (int) cmd.getParsedOptionValue(CMD_OPTION_TILE_H);
-      } else {
-        mosaiqueHeight = inputImage.getHeight() / 10;
-      }
-    }
-    catch (Exception e) {
-      System.out.println(e.getMessage());
+
+    } catch (IOException e) {
+      System.err.println(e.getMessage());
       System.exit(1);
     }
-    
-    //create RectangelArtist and MasaiqueEasel
-    RectangleArtist rectArtist = new RectangleArtist(tiles, mosaiqueWidth, mosaiqueHeight);
-    MosaiqueEasel mosaEasel = new MosaiqueEasel();
-    
-    BufferedImage outputMosaique =  mosaEasel.createMosaique(inputImage, rectArtist);
-    
-    //store Image
-    // DAMN I HAVE NO MORE TIME
-    
-    
-    /**
-     * Implement me! Remove exception when done!
-     *
-     * HINT: You have to convert the files from the image folder to Objects of class
-     * org.iMage.mosaique.base.BufferedArtImage before you can use Mosaique.
-     */
-    throw new RuntimeException("not implemented");
 
+    if (tiles.size() < 10) {
+      System.err.println("Not enough tiles found");
+      System.exit(1);
+    }
+
+    return tiles;
+
+  }
+
+  private static void writeOutput(CommandLine cmd, BufferedImage outputImage) {
+    File output = null;
+    try {
+      output = App.ensureFile(cmd.getOptionValue(App.CMD_OPTION_OUTPUT_IMAGE), true);
+      ImageIO.write(outputImage, "png", output);
+    } catch (IOException e) {
+      System.err.println("Could not save image: " + e.getMessage());
+      System.exit(1);
+    }
+
+  }
+
+  /**
+   * Ensure that a file exists (or create if allowed by parameter).
+   *
+   * @param path
+   *     the path to the file
+   * @param create
+   *     indicates whether creation is allowed
+   * @return the file
+   * @throws IOException
+   *     if something went wrong
+   */
+  private static File ensureFile(String path, boolean create) throws IOException {
+    File file = new File(path);
+    if (file.exists()) {
+      return file;
+    }
+    if (create) {
+      file.createNewFile();
+      return file;
+    }
+
+    // File not available
+    throw new IOException("The specified file does not exist: " + path);
   }
 
   /**
    * Parse and check command line arguments
    *
    * @param args
-   *          command line arguments given by the user
+   *     command line arguments given by the user
    * @return CommandLine object encapsulating all options
    * @throws ParseException
-   *           if wrong command line parameters or arguments are given
+   *     if wrong command line parameters or arguments are given
    */
   private static CommandLine doCommandLineParsing(String[] args) throws ParseException {
     Options options = new Options();
