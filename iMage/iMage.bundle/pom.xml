@@ -6,7 +6,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>swt1.ub3.a3</groupId>
-  <artifactId>iMage.bundle</artifactId>
+  <artifactId>20628222</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>swt1.ub3.a1</groupId>
@@ -14,14 +14,14 @@
   		<version>0.1.0-SNAPSHOT</version>
   	</dependency>
   	<dependency>
-  		<groupId>swt1.ub3.a2</groupId>
-  		<artifactId>2062822</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
   		<groupId>junit</groupId>
   		<artifactId>junit</artifactId>
   		<scope>test</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>swt1.ub3.a2</groupId>
+  		<artifactId>2062822</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>
   <build>
@@ -33,10 +33,10 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
+                            <classpathPrefix></classpathPrefix>
                             <classpathLayoutType>repository</classpathLayoutType>
                             <useUniqueVersions>false</useUniqueVersions>
-                            <mainClass>org.iMage.mosaique.cli.App</mainClass>
+                            <mainClass>iMage.bundle.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -57,7 +57,7 @@
                             <useBaseVersion>true</useBaseVersion>
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
                             <includeScope>runtime</includeScope>
                         </configuration>
                     </execution>

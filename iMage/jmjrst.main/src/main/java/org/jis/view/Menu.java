@@ -114,6 +114,7 @@ public class Menu extends JMenuBar {
      */
     Iterable<PluginForJmjrst> pluginList = PluginManagement.getPlugins();
     for (PluginForJmjrst plugin : pluginList) {
+      plugin.init(m);
       JMenuItem tempItem = new JMenuItem(new AbstractAction("Start" + plugin.getName()) {
         
         private static final long serialVersionUID = -5248261527843149996L;
