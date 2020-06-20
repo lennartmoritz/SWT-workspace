@@ -6,7 +6,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>swt1.ub3.a3</groupId>
-  <artifactId>20628222</artifactId>
+  <artifactId>2062822</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>swt1.ub3.a1</groupId>
@@ -33,7 +33,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix></classpathPrefix>
+                            <classpathPrefix>lib/</classpathPrefix>
                             <classpathLayoutType>repository</classpathLayoutType>
                             <useUniqueVersions>false</useUniqueVersions>
                             <mainClass>iMage.bundle.App</mainClass>
@@ -57,7 +57,7 @@
                             <useBaseVersion>true</useBaseVersion>
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
                             <includeScope>runtime</includeScope>
                         </configuration>
                     </execution>
