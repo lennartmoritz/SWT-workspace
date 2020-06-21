@@ -9,7 +9,11 @@ import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -68,6 +72,8 @@ public class Gbo extends JFrame {
   boolean validInput = false;
   JDialog sizeErrWind = new JDialog(Gbo.this);
   JLabel sizeErrText = new JLabel();
+  JFormattedTextField heightInput;
+  JFormattedTextField widthInput;
   
 
   public Gbo() throws HeadlessException {
@@ -105,11 +111,10 @@ public class Gbo extends JFrame {
     // fill pane
     pane.add(pic1, BorderLayout.LINE_START);
     pane.add(pic2, BorderLayout.LINE_END);
-
     
     // Create configuration area
     JPanel configPanel = new JPanel();
-    configPanel.setLayout(new BorderLayout());
+    configPanel.setLayout(new GridBagLayout());
     
     TitledBorder configBorder = BorderFactory.createTitledBorder("Configuration");
     configPanel.setBorder(configBorder);
@@ -124,7 +129,6 @@ public class Gbo extends JFrame {
       @Override
       public void actionPerformed(ActionEvent e) {
         // Open a dialog to select an image
-        
         FileFilter filter = new FileNameExtensionFilter("PNG or JPEG", new String[] {"png", "jpg", "jpeg"});
         fc.setAcceptAllFileFilterUsed(false);
         fc.addChoosableFileFilter(filter);
@@ -135,7 +139,7 @@ public class Gbo extends JFrame {
           File inputFile = fc.getSelectedFile();
           try {
             img1 = ImageIO.read(inputFile);
-            pic1.setIcon(new ImageIcon(img1));
+            pic1.setIcon(new ImageIcon(resizeDispImg(img1, 250, 350)));
             validInput = true;
           } catch (IOException e1) {
             e1.printStackTrace();
@@ -145,12 +149,19 @@ public class Gbo extends JFrame {
     });
     
     // fill configPanel
-    configPanel.add(loadInput, BorderLayout.LINE_START);
-    configPanel.add(saveResult, BorderLayout.LINE_END);
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.insets = new Insets(0, 140, 0, 0);
+    gbc.anchor = GridBagConstraints.CENTER;
+    configPanel.add(loadInput, gbc);
+    gbc.gridx = 1;
+    configPanel.add(saveResult, gbc);
+    gbc.insets = new Insets(0, 0, 0, 0);
     
     // create artistic area
     JPanel artisticPanel = new JPanel();
-    artisticPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+    artisticPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 25, 0));
     
     TitledBorder artisticBorder = BorderFactory.createTitledBorder("Artistic");
     artisticPanel.setBorder(artisticBorder);
@@ -165,14 +176,13 @@ public class Gbo extends JFrame {
     sizeErrWind.setModal(false);
     sizeErrWind.setSize(350, 350);
     sizeErrWind.setLocation(Gbo.this.getLocation());
-    JFormattedTextField heightInput = getIntInput(true);
-    JFormattedTextField widthInput = getIntInput(false);
+    heightInput = getIntInput(true);
+    widthInput = getIntInput(false);
     
     // create Buttons
     JButton loadTiles = initLoadTiles(new JButton("Load Tiles"));
     JButton showTiles = initShowTiles(new JButton("Show Tiles"));
     JButton runButton = new JButton("Run");
-    
     
     // add runButton button's action
     runButton.addActionListener(new ActionListener() {
@@ -194,9 +204,9 @@ public class Gbo extends JFrame {
           + typeSelection.getItemAt(typeSelection.getSelectedIndex()));
             System.exit(ERROR);
           }
-          
+          // Update result image
           img2 = myEasel.createMosaique(img1, myArtist);
-          pic2.setIcon(new ImageIcon(img2));
+          pic2.setIcon(new ImageIcon(resizeDispImg(img2, 250, 350)));
           saveResult.setEnabled(true);
         }
       }
@@ -218,7 +228,11 @@ public class Gbo extends JFrame {
     artisticPanel.add(runButton);
     
     // fill configPanel
-    configPanel.add(artisticPanel, BorderLayout.PAGE_END);
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.gridwidth = 2;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    configPanel.add(artisticPanel, gbc);
     
     // fill pane
     pane.add(configPanel, BorderLayout.PAGE_END);
@@ -390,11 +404,13 @@ public class Gbo extends JFrame {
         myDialog.setVisible(true);
         JPanel thumbnailPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 2, 2));
         
+        int width = Integer.parseInt(widthInput.getText());
+        int height = Integer.parseInt(heightInput.getText());
         IMosaiqueArtist<BufferedArtImage> myArtist = null;
         if (typeSelection.getItemAt(typeSelection.getSelectedIndex()).equals("Rectangle")) {
-          myArtist = new RectangleArtist(tileList, 70, 70);
+          myArtist = new RectangleArtist(tileList, width, height);
         } else if (typeSelection.getItemAt(typeSelection.getSelectedIndex()).equals("Triangle")) {
-          myArtist = new TriangleArtist(tileList, 70, 70);
+          myArtist = new TriangleArtist(tileList, width, height);
         } else {
           System.err.println("Could not match Combobox selection: " 
         + typeSelection.getItemAt(typeSelection.getSelectedIndex()));
@@ -402,7 +418,19 @@ public class Gbo extends JFrame {
         }
         List<BufferedImage> thumbnails = myArtist.getThumbnails();
         for (BufferedImage thumbnail : thumbnails) {
-          thumbnailPanel.add(new JLabel(new ImageIcon(thumbnail)));
+          int tempHeight = thumbnail.getHeight();
+          int tempWidth = thumbnail.getWidth();
+          if (tempHeight >= tempWidth) {
+            tempWidth = (int) Math.round(tempWidth * 70.0 / tempHeight);
+            tempHeight = 70;
+          } else {
+            tempHeight = (int) Math.round(tempHeight * 70.0 / tempWidth);
+            tempWidth = 70;
+          }
+          Image dispImage = thumbnail.getScaledInstance(tempWidth, tempHeight, Image.SCALE_DEFAULT);
+          JLabel tempImgFrame = new JLabel(new ImageIcon(dispImage));
+          tempImgFrame.setPreferredSize(new Dimension(70, 70));
+          thumbnailPanel.add(tempImgFrame);
         }
         thumbnailPanel.setPreferredSize(new Dimension(530, 70 * (1 + thumbnails.size() / 7)));
         JScrollPane scrollPanel = new JScrollPane(thumbnailPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
@@ -446,6 +474,22 @@ public class Gbo extends JFrame {
       }
     });
     return button;
+  }
+  
+  private Image resizeDispImg(BufferedImage img, int height, int width) {
+ // resize display image
+    int dispHeight = img.getHeight();
+    int dispWidth = img.getWidth();
+    if (dispHeight > height) {
+      dispWidth = (int) Math.round(250.0 * dispWidth / dispHeight);
+      dispHeight = height;
+    }
+    if (dispWidth > width) {
+      dispHeight = (int) Math.round(350.0 * dispHeight / dispWidth);
+      dispWidth = width;
+    }
+    Image dispImg =  img.getScaledInstance(dispWidth, dispHeight, Image.SCALE_DEFAULT);
+    return dispImg;
   }
 }
 
